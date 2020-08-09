@@ -85,7 +85,6 @@ def todos_list():
     if request.method == "POST":
         if form.validate_on_submit():
             todos.create(form.data)
-            # todos.save_all()
         return redirect(url_for("todos_list"))
     print("todos.select_all()", todos.select_all())
     return render_template("todos.html", form=form, todos=todos.select_all(), error=error)

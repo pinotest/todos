@@ -56,30 +56,24 @@ class TodosSQLite:
     def create(self, data):
         #     """
         #     Add a new todo into the todos table
-        #     :param conn:
         #     :param todo:
         #     :return: todo id
         #     """
         sql = '''INSERT INTO todos(title, description, done)
                 VALUES(?,?,?)'''
-
         cur = self.cursor()
         data = (data['title'], data['description'], data['done'])
-        print("data", data)
         cur.execute(sql, data)
         self.conn.commit()
         return cur.lastrowid
 
-    def add(self, todo):
-        add_todo = self.add_todo(todo)
-        return add_todo
-    # def update(self, id, data):
-    #     todo = self.get(id)
-    #     if todo:
-    #         index = self.todos.index(todo)
-    #         self.todos[index] = data
-    #         return True
-    #     return False
+    def update(self, id, data):
+        todo = self.get(id)
+        if todo:
+            index = self.todos.index(todo)
+            self.todos[index] = data
+            return True
+        return False
 
     # def delete(self, id):
     #     todo = self.get(id)
