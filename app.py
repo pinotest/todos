@@ -29,6 +29,8 @@ def not_found(error):
 def bad_request(error):
     return make_response(jsonify({'error': 'Bad request', 'status_code': 400}), 400)
 
+# TODO
+
 
 @app.route("/api/v1/todos/", methods=["POST"])
 def create_todo():
@@ -50,6 +52,8 @@ def delete_todo(todo_id):
     if not result:
         abort(404)
     return jsonify({'result': result})
+
+# TODO
 
 
 @app.route("/api/v1/todos/<int:todo_id>", methods=["PUT"])
@@ -75,7 +79,7 @@ def update_todo(todo_id):
     return jsonify({'todo': todo})
 
 
-# version without REST
+# web version
 
 
 @app.route("/todos/", methods=["GET", "POST"])
@@ -95,7 +99,7 @@ def todo_details(todo_id):
     form = TodoForm(data=todo)
     print(form.is_submitted())
     if request.method == "POST":
-        todos.update(todo_id, form.data)  # poprawić
+        todos.update(todo_id, form.data)
         return redirect(url_for("todos_list"))
     return render_template("todo.html", form=form, todo_id=todo_id)
 

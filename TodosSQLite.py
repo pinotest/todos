@@ -56,7 +56,7 @@ class TodosSQLite:
     def create(self, data):
         #     """
         #     Add a new todo into the todos table
-        #     :param todo:
+        #     :param new todo: data
         #     :return: todo id
         #     """
         sql = '''INSERT INTO todos(title, description, done)
@@ -68,7 +68,11 @@ class TodosSQLite:
         return cur.lastrowid
 
     def update(self, id, data):
-        #todo = self.get(id)
+        #     """
+        #     Update existing todo in the todos table
+        #     :param todo id: id
+        #     :param new data for todo: data
+        #     """
         if data['done'] == False:
             data['done'] = 0
         else:
@@ -84,13 +88,25 @@ class TodosSQLite:
         except sqlite3.OperationalError as e:
             print("Problem techniczny: ", e)
 
-    # def delete(self, id):
-    #     todo = self.get(id)
-    #     if todo:
-    #         self.todos.remove(todo)
-    #         self.save_all()
-    #         return True
-    #     return False
+    def delete(self, id):
+        #     """
+        #     Delete existing todo in the todos table
+        #     :param todo id: id
+        #     :param new data for todo: data
+        #     """
+        todo = self.get(id)
+        if todo:
+            sql = f'''DELETE from todos
+                    WHERE id = ?'''
+            try:
+                cur = self.cursor()
+                cur.execute(sql, (id, ))
+                self.conn.commit()
+                print("Delete wykonany")
+            except sqlite3.OperationalError as e:
+                print("Problem techniczny: ", e)
+            return True
+        return False
 
 
 todos = TodosSQLite()
