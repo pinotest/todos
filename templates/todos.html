@@ -18,12 +18,14 @@
 
 <table>
     <thead>
+        <th>ID</th>
         <th>Tytuł</th>
         <th>Opis</th>
         <th>Czy zrobione?</th>
     </thead>
     {% for todo in todos %}
     <tr>
+        <td>{{ todo.id }}</td>
         <td><a href="/todos/{{ loop.index }}">{{ todo.title }}</a></td>
         <td>{{ todo.description }}</td>
         <td>{{ todo.done }}</td>

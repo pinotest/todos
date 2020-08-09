@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, abort, make_response, request, redirect, render_template, url_for
-from models import todos
+#from models import todos
 from forms import TodoForm
+from TodosSQLite import todos
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "nininini"
@@ -8,7 +9,7 @@ app.config["SECRET_KEY"] = "nininini"
 
 @app.route("/api/v1/todos/", methods=["GET"])
 def todos_list_api_v1():
-    return jsonify(todos.all())
+    return jsonify(todos.select_all())
 
 
 @app.route("/api/v1/todos/<int:todo_id>", methods=["GET"])
@@ -34,7 +35,7 @@ def create_todo():
     if not request.json or not 'title' in request.json:
         abort(400)
     todo = {
-        'id': todos.all()[-1]['id'] + 1,
+        'id': todos.select_all()[-1]['id'] + 1,  # zmienić na count albo max
         'title': request.json['title'],
         'description': request.json.get('description', ""),
         'done': False
@@ -87,7 +88,7 @@ def todos_list():
             todos.save_all()
         return redirect(url_for("todos_list"))
 
-    return render_template("todos.html", form=form, todos=todos.all(), error=error)
+    return render_template("todos.html", form=form, todos=todos.select_all(), error=error)
 
 
 @app.route("/todos/<int:todo_id>/", methods=["GET", "POST"])

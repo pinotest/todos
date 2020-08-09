@@ -26,7 +26,7 @@ class TodosSQLite:
             print(e)
         return conn
 
-    def get_all(self, table):
+    def count_all(self, table):
         cur = self.cursor().execute(f"SELECT * FROM {table};")
         print("cur", cur)
         todos_list = cur.fetchall()
@@ -39,14 +39,15 @@ class TodosSQLite:
     def select_all(self):
         """
         Query all rows in the table
-        :param conn: the Connection object
-        :return:
+        return:
         """
         cur = self.cursor()
         cur.execute("SELECT * FROM todos")
-        rows = cur.fetchone()
-
+        rows = cur.fetchall()
         return rows
+
+    def all(self):
+        return self.select_all()
 
     def get(self, id):
         #todo = [todo for todo in self.select_all() if todo['id'] == id]
@@ -70,6 +71,9 @@ class TodosSQLite:
         self.conn.commit()
         return cur.lastrowid
 
+    def add(self, todo):
+        add_todo = self.add_todo(todo)
+        return add_todo
     # def update(self, id, data):
     #     todo = self.get(id)
     #     if todo:
@@ -87,5 +91,5 @@ class TodosSQLite:
     #     return False
 
 
-todos_SQL = TodosSQLite()
+todos = TodosSQLite()
 # todos.create_connection("database.db")
