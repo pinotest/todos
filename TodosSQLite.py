@@ -46,8 +46,8 @@ class TodosSQLite:
         rows = cur.fetchall()
         return rows
 
-    def all(self):
-        return self.select_all()
+    # def all(self):
+    #     return self.select_all()
 
     def get(self, id):
         #todo = [todo for todo in self.select_all() if todo['id'] == id]
