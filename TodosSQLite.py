@@ -8,7 +8,6 @@ class TodosSQLite:
 
     def cursor(self):
         self.conn = self.create_connection(self.db_file)
-        print("self.conn.cursor()", self.conn.cursor())
         return self.conn.cursor()
 
     def create_connection(self, db_file):
@@ -26,8 +25,8 @@ class TodosSQLite:
             print(e)
         return conn
 
-    def count_all(self, table):
-        cur = self.cursor().execute(f"SELECT * FROM {table};")
+    def count_all(self):
+        cur = self.cursor().execute(f"SELECT max(id) FROM todos;")
         print("cur", cur)
         todos_list = cur.fetchall()
         print("cur.fetchall()", cur.fetchall())
@@ -46,28 +45,28 @@ class TodosSQLite:
         rows = cur.fetchall()
         return rows
 
-    # def all(self):
-    #     return self.select_all()
-
     def get(self, id):
-        #todo = [todo for todo in self.select_all() if todo['id'] == id]
+        # todo = [todo for todo in self.select_all() if todo['id'] == id]
         todo = self.select_all()
         print(todo)
         if todo:
             return todo[0]
         return []
 
-    def add_todo(self, todo):
+    def create(self, data):
         #     """
         #     Add a new todo into the todos table
         #     :param conn:
         #     :param todo:
         #     :return: todo id
         #     """
-        sql = '''INSERT INTO todos(id, name, description, done)
-                VALUES(?,?,?,?)'''
-        cur = self.conn.cursor()
-        cur.execute(sql, todo)
+        sql = '''INSERT INTO todos(title, description, done)
+                VALUES(?,?,?)'''
+
+        cur = self.cursor()
+        data = (data['title'], data['description'], data['done'])
+        print("data", data)
+        cur.execute(sql, data)
         self.conn.commit()
         return cur.lastrowid
 

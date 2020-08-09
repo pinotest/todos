@@ -25,10 +25,10 @@
     </thead>
     {% for todo in todos %}
     <tr>
-        <td>{{ todo.id }}</td>
-        <td><a href="/todos/{{ loop.index }}">{{ todo.title }}</a></td>
-        <td>{{ todo.description }}</td>
-        <td>{{ todo.done }}</td>
+        <td>{{ todo[0] }}</td>
+        <td><a href="/todos/{{ loop.index }}">{{ todo[1] }}</a></td>
+        <td>{{ todo[2] }}</td>
+        <td>{{ todo[3] }}</td>
     </tr>
     {% endfor %}
 </table>

@@ -4,7 +4,7 @@ from forms import TodoForm
 from TodosSQLite import todos
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "nininini"
+app.config["SECRET_KEY"] = "nietaknietaknietak"
 
 
 @app.route("/api/v1/todos/", methods=["GET"])
@@ -35,7 +35,7 @@ def create_todo():
     if not request.json or not 'title' in request.json:
         abort(400)
     todo = {
-        'id': todos.select_all()[-1]['id'] + 1,  # zmienić na count albo max
+        'id': todos.count_all() + 1,  # zmienić na count albo max
         'title': request.json['title'],
         'description': request.json.get('description', ""),
         'done': False
@@ -85,9 +85,9 @@ def todos_list():
     if request.method == "POST":
         if form.validate_on_submit():
             todos.create(form.data)
-            todos.save_all()
+            # todos.save_all()
         return redirect(url_for("todos_list"))
-
+    print("todos.select_all()", todos.select_all())
     return render_template("todos.html", form=form, todos=todos.select_all(), error=error)
 
 
