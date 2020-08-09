@@ -9,14 +9,16 @@ class Todos:
         except FileNotFoundError:
             self.todos = [
                 {
-                    'title': 'Zakupy',
-                    'description': 'Mleko, jajka, mąka, olej, papier toaletowy (jak będzie)',
-                    'done': False
+                    "id": 1,
+                    "title": "Lekcja angielskiego",
+                    "description": "Czasowniki regularne",
+                    "done": False
                 },
                 {
-                    'title': 'Zrobić zadania z Pythona',
-                    'description': 'Przygotować projekt z modułu i wysłać Mentorowi',
-                    'done': False
+                    "id": 2,
+                    "title": "Python",
+                    "description": "Dekoratory",
+                    "done": False
                 }
             ]
 
@@ -24,20 +26,35 @@ class Todos:
         return self.todos
 
     def get(self, id):
-        return self.todos[id]
+        todo = [todo for todo in self.all() if todo['id'] == id]
+        if todo:
+            return todo[0]
+        return []
 
     def create(self, data):
-        data.pop('csrf_token')
         self.todos.append(data)
+        self.save_all()
 
     def save_all(self):
         with open("todos.json", "w") as f:
             json.dump(self.todos, f)
 
     def update(self, id, data):
-        data.pop('csrf_token')
-        self.todos[id] = data
-        self.save_all()
+        todo = self.get(id)
+        if todo:
+            index = self.todos.index(todo)
+            self.todos[index] = data
+            self.save_all()
+            return True
+        return False
+
+    def delete(self, id):
+        todo = self.get(id)
+        if todo:
+            self.todos.remove(todo)
+            self.save_all()
+            return True
+        return False
 
 
 todos = Todos()
