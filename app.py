@@ -29,15 +29,12 @@ def not_found(error):
 def bad_request(error):
     return make_response(jsonify({'error': 'Bad request', 'status_code': 400}), 400)
 
-# TODO
-
 
 @app.route("/api/v1/todos/", methods=["POST"])
 def create_todo():
     if not request.json or not 'title' in request.json:
         abort(400)
     todo = {
-        'id': todos.count_all() + 1,  # zmienić na count albo max
         'title': request.json['title'],
         'description': request.json.get('description', ""),
         'done': False
@@ -52,8 +49,6 @@ def delete_todo(todo_id):
     if not result:
         abort(404)
     return jsonify({'result': result})
-
-# TODO
 
 
 @app.route("/api/v1/todos/<int:todo_id>", methods=["PUT"])
@@ -77,7 +72,6 @@ def update_todo(todo_id):
     }
     todos.update(todo_id, todo)
     return jsonify({'todo': todo})
-
 
 # web version
 
