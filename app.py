@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, abort, make_response, request, redirect, render_template, url_for
-#from models import todos
+# from models import todos
 from forms import TodoForm
 from TodosSQLite import todos
 
@@ -86,18 +86,16 @@ def todos_list():
         if form.validate_on_submit():
             todos.create(form.data)
         return redirect(url_for("todos_list"))
-    print("todos.select_all()", todos.select_all())
     return render_template("todos.html", form=form, todos=todos.select_all(), error=error)
 
 
 @app.route("/todos/<int:todo_id>/", methods=["GET", "POST"])
 def todo_details(todo_id):
-    todo = todos.get(todo_id - 1)
+    todo = todos.get(todo_id)
     form = TodoForm(data=todo)
-
+    print(form.is_submitted())
     if request.method == "POST":
-        if form.validate_on_submit():
-            todos.update(todo_id - 1, form.data)
+        todos.update(todo_id, form.data)  # poprawić
         return redirect(url_for("todos_list"))
     return render_template("todo.html", form=form, todo_id=todo_id)
 

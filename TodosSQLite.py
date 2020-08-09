@@ -27,11 +27,7 @@ class TodosSQLite:
 
     def count_all(self):
         cur = self.cursor().execute(f"SELECT max(id) FROM todos;")
-        print("cur", cur)
         todos_list = cur.fetchall()
-        print("cur.fetchall()", cur.fetchall())
-        print("cur.execute", cur.execute("select id from todos;"))
-        print("cur.fetchall()", cur.fetchall())
         cur.close()
         return todos_list
 
@@ -47,10 +43,14 @@ class TodosSQLite:
 
     def get(self, id):
         # todo = [todo for todo in self.select_all() if todo['id'] == id]
-        todo = self.select_all()
-        print(todo)
+        cur = self.cursor()
+        cur.execute("select * from todos where id==?", (id,))
+        todo = cur.fetchall()
+
+        convert_todo = {'id': todo[0][0], 'title': todo[0][1],
+                        'description': todo[0][2], 'done': todo[0][3]}
         if todo:
-            return todo[0]
+            return convert_todo
         return []
 
     def create(self, data):
@@ -68,12 +68,21 @@ class TodosSQLite:
         return cur.lastrowid
 
     def update(self, id, data):
-        todo = self.get(id)
-        if todo:
-            index = self.todos.index(todo)
-            self.todos[index] = data
-            return True
-        return False
+        #todo = self.get(id)
+        if data['done'] == False:
+            data['done'] = 0
+        else:
+            data['done'] = 1
+        sql = f'''UPDATE todos
+                    SET title='{data['title']}', description='{data['description']}', done={data['done']}
+                    WHERE id = ?'''
+        try:
+            cur = self.cursor()
+            cur.execute(sql, (id, ))
+            self.conn.commit()
+            print("Update wykonany")
+        except sqlite3.OperationalError as e:
+            print("Problem techniczny: ", e)
 
     # def delete(self, id):
     #     todo = self.get(id)
@@ -85,4 +94,3 @@ class TodosSQLite:
 
 
 todos = TodosSQLite()
-# todos.create_connection("database.db")
