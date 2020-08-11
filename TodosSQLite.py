@@ -1,5 +1,7 @@
 import sqlite3
+import logging
 from sqlite3 import Error
+logging.basicConfig(level=logging.INFO)
 
 
 class TodosSQLite:
@@ -19,10 +21,10 @@ class TodosSQLite:
         conn = None
         try:
             conn = sqlite3.connect(db_file)
-            print("Successfully Connected to SQLite")
+            logging.info("Successfully Connected to SQLite")
             return conn
         except Error as e:
-            print(e)
+            logging.error("Technical problem: %s" % e)
         return conn
 
     def count_all(self):
@@ -43,11 +45,9 @@ class TodosSQLite:
         return rows
 
     def get(self, id):
-        # todo = [todo for todo in self.select_all() if todo['id'] == id]
         cur = self.cursor()
         cur.execute("SELECT * FROM todos WHERE id==?", (id,))
         todo = cur.fetchall()
-
         convert_todo = {'id': todo[0][0], 'title': todo[0][1],
                         'description': todo[0][2], 'done': todo[0][3]}
         if todo:
@@ -88,9 +88,9 @@ class TodosSQLite:
             cur.execute(sql, (id, ))
             self.conn.commit()
             cur.close()
-            print("Update wykonany")
+            logging.info("Update done succesfully")
         except sqlite3.OperationalError as e:
-            print("Problem techniczny: ", e)
+            logging.error("Technical problem: %s" % e)
 
     def delete(self, id):
         #     """
@@ -107,9 +107,9 @@ class TodosSQLite:
                 cur.execute(sql, (id, ))
                 self.conn.commit()
                 cur.close()
-                print("Delete wykonany")
+                logging.info("Delete done")
             except sqlite3.OperationalError as e:
-                print("Problem techniczny: ", e)
+                logging.error("Technical problem: %s" % e)
             return True
         return False
 

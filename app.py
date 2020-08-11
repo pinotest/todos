@@ -1,5 +1,4 @@
 from flask import Flask, jsonify, abort, make_response, request, redirect, render_template, url_for
-# from models import todos
 from forms import TodoForm
 from TodosSQLite import todos
 
