@@ -1,7 +1,7 @@
 import sqlite3
 import logging
 from sqlite3 import Error
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
 
 
 class TodosSQLite:
@@ -9,18 +9,17 @@ class TodosSQLite:
         self.db_file = db_file
 
     def cursor(self):
-        self.conn = self.create_connection(self.db_file)
+        self.conn = self.create_connection()
         return self.conn.cursor()
 
-    def create_connection(self, db_file):
+    def create_connection(self):
         """ create a database connection to the SQLite database
             specified by db_file
-        :param db_file: database file
         :return: Connection object or None
         """
         conn = None
         try:
-            conn = sqlite3.connect(db_file)
+            conn = sqlite3.connect(self.db_file)
             logging.info("Successfully Connected to SQLite")
             return conn
         except Error as e:
