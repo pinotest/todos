@@ -39,19 +39,21 @@ class TodosSQLite:
         cur = self.cursor()
         cur.execute("SELECT * FROM todos")
         rows = cur.fetchall()
+        cur.close()
         return rows
 
     def get(self, id):
         # todo = [todo for todo in self.select_all() if todo['id'] == id]
         cur = self.cursor()
-        cur.execute("select * from todos where id==?", (id,))
+        cur.execute("SELECT * FROM todos WHERE id==?", (id,))
         todo = cur.fetchall()
 
         convert_todo = {'id': todo[0][0], 'title': todo[0][1],
                         'description': todo[0][2], 'done': todo[0][3]}
         if todo:
             return convert_todo
-        return []
+        cur.close()
+        return {}
 
     def create(self, data):
         #     """
@@ -65,6 +67,7 @@ class TodosSQLite:
         data = (data['title'], data['description'], data['done'])
         cur.execute(sql, data)
         self.conn.commit()
+        cur.close()
         return cur.lastrowid
 
     def update(self, id, data):
@@ -84,6 +87,7 @@ class TodosSQLite:
             cur = self.cursor()
             cur.execute(sql, (id, ))
             self.conn.commit()
+            cur.close()
             print("Update wykonany")
         except sqlite3.OperationalError as e:
             print("Problem techniczny: ", e)
@@ -92,7 +96,7 @@ class TodosSQLite:
         #     """
         #     Delete existing todo in the todos table
         #     :param todo id: id
-        #     :param new data for todo: data
+        #     :return: True
         #     """
         todo = self.get(id)
         if todo:
@@ -102,6 +106,7 @@ class TodosSQLite:
                 cur = self.cursor()
                 cur.execute(sql, (id, ))
                 self.conn.commit()
+                cur.close()
                 print("Delete wykonany")
             except sqlite3.OperationalError as e:
                 print("Problem techniczny: ", e)
