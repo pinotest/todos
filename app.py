@@ -1,6 +1,11 @@
 from flask import Flask, jsonify, abort, make_response, request, redirect, render_template, url_for
 from forms import TodoForm
 from TodosSQLite import todos
+import logging
+
+import requests
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(message)s')
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "nietaknietaknietak"
@@ -8,6 +13,7 @@ app.config["SECRET_KEY"] = "nietaknietaknietak"
 
 @app.route("/api/v1/todos/", methods=["GET"])
 def todos_list_api_v1():
+    # issue zwraca jedynie zawartość tabeli - nie ma klucza w json
     return jsonify(todos.select_all())
 
 
@@ -81,16 +87,19 @@ def todos_list():
     error = ""
     if request.method == "POST":
         if form.validate_on_submit():
-            todos.create(form.data)
+            response = requests.post(str(request.url_root) + url_for("create_todo"),
+                                     json=form.data, headers={'Content-type': 'application/json',
+                                                              'Accept': 'text/plain'})
+            if not response.ok:
+                logging.error("Technical problem with API funcion")
         return redirect(url_for("todos_list"))
     return render_template("todos.html", form=form, todos=todos.select_all(), error=error)
 
 
-@app.route("/todos/<int:todo_id>/", methods=["GET", "POST"])
+@ app.route("/todos/<int:todo_id>/", methods=["GET", "POST"])
 def todo_details(todo_id):
     todo = todos.get(todo_id)
     form = TodoForm(data=todo)
-    print(form.is_submitted())
     if request.method == "POST":
         todos.update(todo_id, form.data)
         return redirect(url_for("todos_list"))
