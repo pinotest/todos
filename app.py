@@ -93,7 +93,6 @@ def todos_list():
             logging.info("response %s" % response.status_code)
             if response.status_code != 201:
                 logging.error("Technical problem with API funcion")
-        return redirect(url_for("todos_list"))
     return render_template("todos.html", form=form, todos=todos.select_all(), error=error)
 
 
