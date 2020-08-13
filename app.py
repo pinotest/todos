@@ -90,7 +90,8 @@ def todos_list():
             response = requests.post(str(request.url_root) + url_for("create_todo"),
                                      json=form.data, headers={'Content-type': 'application/json',
                                                               'Accept': 'text/plain'})
-            if not response.ok:
+            logging.info("response %s" % response.status_code)
+            if response.status_code != 201:
                 logging.error("Technical problem with API funcion")
         return redirect(url_for("todos_list"))
     return render_template("todos.html", form=form, todos=todos.select_all(), error=error)

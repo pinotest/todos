@@ -29,7 +29,7 @@ class TodosSQLite:
     def count_all(self):
         cur = self.cursor().execute(f"SELECT max(id) FROM todos;")
         todos_list = cur.fetchall()
-        cur.close()
+        cur.close()  # dodać zamkniecie połączenie z baza za każdym razem?
         return todos_list
 
     def select_all(self):
