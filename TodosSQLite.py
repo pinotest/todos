@@ -47,9 +47,10 @@ class TodosSQLite:
         cur = self.cursor()
         cur.execute("SELECT * FROM todos WHERE id==?", (id,))
         todo = cur.fetchall()
-        convert_todo = {'id': todo[0][0], 'title': todo[0][1],
-                        'description': todo[0][2], 'done': todo[0][3]}
+
         if todo:
+            convert_todo = {'id': todo[0][0], 'title': todo[0][1],
+                            'description': todo[0][2], 'done': todo[0][3]}
             return convert_todo
         cur.close()
         return {}
@@ -67,6 +68,7 @@ class TodosSQLite:
         cur.execute(sql, data)
         self.conn.commit()
         cur.close()
+        self.conn.close()
         return cur.lastrowid
 
     def update(self, id, data):

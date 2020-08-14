@@ -71,6 +71,7 @@ def update_todo(todo_id):
     ]):
         abort(400)
     todo = {
+        'id': todo_id,
         'title': data.get('title', todo['title']),
         'description': data.get('description', todo['description']),
         'done': data.get('done', todo['done'])
@@ -101,7 +102,14 @@ def todo_details(todo_id):
     todo = todos.get(todo_id)
     form = TodoForm(data=todo)
     if request.method == "POST":
-        todos.update(todo_id, form.data)
+        full_url = str(request.url_root) + \
+            url_for("update_todo", todo_id=todo_id)
+        response = requests.put(full_url,
+                                json=form.data, headers={'Content-type': 'application/json',
+                                                         'Accept': 'text/plain'})
+        logging.info("response code from API: %s" % response.status_code)
+        if response.status_code != 201:
+            logging.error("Technical problem with API funcion")
         return redirect(url_for("todos_list"))
     return render_template("todo.html", form=form, todo_id=todo_id)
 
